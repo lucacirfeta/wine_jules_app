@@ -1,0 +1,311 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Logger - My Wines</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Capacitor JS: Must be included for Capacitor plugins to work -->
+    <script src="capacitor.js"></script>
+    <!-- Database script: Ensure this is loaded before the page's main script -->
+    <script src="js/database.js"></script>
+    <style>
+      /* Basic loading spinner style (optional) */
+      .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #e9b8ba; /* Wine-ish color */
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+    <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden">
+      <div>
+        <!-- Header -->
+        <div class="flex items-center bg-white p-4 pb-2 justify-between sticky top-0 z-10 shadow-sm">
+          <h2 id="winesTitle" class="text-[#171212] text-xl font-bold leading-tight tracking-[-0.015em] flex-1 text-center">My Wines</h2>
+          <button 
+            id="addWineBtn" 
+            onclick="navigateToAddModifyPage()"
+            title="Add New Wine"
+            class="absolute top-3 right-3 p-2 bg-[#e9b8ba] text-[#191010] rounded-full hover:bg-[#d0a0a1] focus:outline-none focus:ring-2 focus:ring-[#e9b8ba] focus:ring-opacity-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="px-4 py-3 bg-white border-b border-gray-200">
+          <label class="flex flex-col min-w-40 h-12 w-full">
+            <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+              <div class="text-[#826869] flex border-none bg-[#f4f1f1] items-center justify-center pl-4 rounded-l-xl border-r-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+                </svg>
+              </div>
+              <input
+                id="searchInput"
+                placeholder="Search wines by name, vintage, or type..."
+                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-xl text-[#171212] focus:outline-0 focus:ring-0 border-none bg-[#f4f1f1] focus:border-none h-full placeholder:text-[#826869] px-4 text-base font-normal leading-normal"
+                value=""
+              />
+            </div>
+          </label>
+        </div>
+
+        <!-- Filters & Sort -->
+        <div class="bg-white p-3 border-b border-gray-200">
+            <div class="flex gap-2 mb-2 overflow-x-auto pb-2">
+                <button data-type="All" class="type-filter-btn flex h-8 shrink-0 items-center justify-center gap-x-1 rounded-full bg-[#e9b8ba] text-white font-semibold px-3 py-1 text-sm cursor-pointer hover:bg-[#d0a0a1]">All</button>
+                <button data-type="Red" class="type-filter-btn flex h-8 shrink-0 items-center justify-center gap-x-1 rounded-full bg-[#f4f1f1] px-3 py-1 text-sm cursor-pointer hover:bg-gray-200">Red</button>
+                <button data-type="White" class="type-filter-btn flex h-8 shrink-0 items-center justify-center gap-x-1 rounded-full bg-[#f4f1f1] px-3 py-1 text-sm cursor-pointer hover:bg-gray-200">White</button>
+                <button data-type="Rose" class="type-filter-btn flex h-8 shrink-0 items-center justify-center gap-x-1 rounded-full bg-[#f4f1f1] px-3 py-1 text-sm cursor-pointer hover:bg-gray-200">Rosé</button>
+                <button data-type="Sparkling" class="type-filter-btn flex h-8 shrink-0 items-center justify-center gap-x-1 rounded-full bg-[#f4f1f1] px-3 py-1 text-sm cursor-pointer hover:bg-gray-200">Sparkling</button>
+                <button data-type="Other" class="type-filter-btn flex h-8 shrink-0 items-center justify-center gap-x-1 rounded-full bg-[#f4f1f1] px-3 py-1 text-sm cursor-pointer hover:bg-gray-200">Other</button>
+            </div>
+            <div class="flex h-10 flex-1 items-center justify-center rounded-full bg-[#f4f1f1] p-1">
+                <label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-2 has-[:checked]:bg-white has-[:checked]:shadow-[0_0_4px_rgba(0,0,0,0.1)] has-[:checked]:text-[#171212] text-[#826869] text-sm font-medium leading-normal">
+                <span class="truncate">Ascending</span>
+                <input type="radio" name="sortOrder" class="invisible w-0" value="ascending" checked="" />
+                </label>
+                <label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-2 has-[:checked]:bg-white has-[:checked]:shadow-[0_0_4px_rgba(0,0,0,0.1)] has-[:checked]:text-[#171212] text-[#826869] text-sm font-medium leading-normal">
+                <span class="truncate">Descending</span>
+                <input type="radio" name="sortOrder" class="invisible w-0" value="descending" />
+                </label>
+            </div>
+        </div>
+        
+        <!-- Wine List Container -->
+        <div id="wineListContainer" class="pb-20">
+          <!-- Wine items will be dynamically inserted here -->
+          <div class="loader"></div> <!-- Initial loading indicator -->
+        </div>
+      </div>
+
+      <!-- Bottom Navigation Placeholder (functionality not fully implemented in this scope) -->
+      <div class="fixed bottom-0 left-0 right-0 z-10">
+        <div class="flex gap-2 border-t border-[#f4f1f1] bg-white px-4 pb-3 pt-2 shadow-t-md">
+          <a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#826869]" href="index.html" title="Home">
+            <div class="text-[#826869] flex h-8 items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256"><path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.1Z"></path></svg>
+            </div>
+            <p class="text-[#826869] text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+          </a>
+          <a class="just flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-[#171212] bg-gray-100 p-1" href="index.html" title="Wines">
+            <div class="text-[#171212] flex h-8 items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256"><path d="M245.66,42.34l-32-32a8,8,0,0,0-11.32,11.32l1.48,1.47L148.65,64.51l-38.22,7.65a8.05,8.05,0,0,0-4.09,2.18L23,157.66a24,24,0,0,0,0,33.94L64.4,233a24,24,0,0,0,33.94,0l83.32-83.31a8,8,0,0,0,2.18-4.09l7.65-38.22,41.38-55.17,1.47,1.48a8,8,0,0,0,11.32-11.32ZM81.37,224a7.94,7.94,0,0,1-5.65-2.34L34.34,180.28a8,8,0,0,1,0-11.31L40,163.31,92.69,216,87,221.66A8,8,0,0,1,81.37,224ZM177.6,99.2a7.92,7.92,0,0,0-1.44,3.23l-7.53,37.63L160,148.69,107.31,96l8.63-8.63,37.63-7.53a7.92,7.92,0,0,0,3.23-1.44l58.45-43.84,6.19,6.19Z"></path></svg>
+            </div>
+            <p class="text-[#171212] text-xs font-medium leading-normal tracking-[0.015em]">Wines</p>
+          </a>
+          <a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#826869]" href="#" title="Profile (Not Implemented)">
+            <div class="text-[#826869] flex h-8 items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path></svg>
+            </div>
+            <p class="text-[#826869] text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- INDEX_SCRIPT_START -->
+    <script type="module">
+    // WineLogger/www/index.html - Main script - Refined
+
+    // Global variables for wine data and view state
+    let allWines = []; // Holds all wines fetched from the database
+    let currentWines = []; // Holds currently displayed/filtered/sorted wines
+    let currentSortOrder = "ascending"; // Default sort order
+    let activeTypeFilter = null; // Currently active wine type filter (null or "All" means no type filter)
+
+    /**
+     * Renders the list of wines in the UI.
+     * Handles asynchronous image loading for locally stored images.
+     * @param {Array<Object>} winesToRender - Array of wine objects to display.
+     */
+    async function renderWineList(winesToRender) {
+        const wineListContainer = document.getElementById("wineListContainer");
+        if (!wineListContainer) {
+            console.error("Error: wineListContainer element not found in HTML.");
+            return;
+        }
+        wineListContainer.innerHTML = '<div class="loader"></div>'; // Show loader while processing images
+
+        if (!winesToRender || winesToRender.length === 0) {
+            wineListContainer.innerHTML = "<p class='text-center text-gray-500 p-4'>No wines found. Try adjusting your search or filters, or add a new wine!</p>";
+            return;
+        }
+
+        // Asynchronously prepare image sources for each wine
+        const winesWithImageSrc = await Promise.all(winesToRender.map(async (wine) => {
+            let imageSrc = "https://via.placeholder.com/150/CCCCCC/FFFFFF?Text=No+Image"; // Default placeholder
+            if (wine.image_path) {
+                if (wine.image_path.startsWith("http") || wine.image_path.startsWith("data:")) {
+                    imageSrc = wine.image_path; // Already a displayable URL or data URI
+                } else {
+                    // Assumed to be a local filename (e.g., '123.jpeg') in Directory.Data
+                    try {
+                        // Ensure Capacitor and its plugins are loaded. This script runs after capacitor.js and database.js
+                        const { Filesystem, Directory } = Capacitor.Plugins; 
+                        const fileUri = await Filesystem.getUri({
+                            directory: Directory.Data,
+                            path: wine.image_path  // This is the filename like 'image.jpg'
+                        });
+                        imageSrc = Capacitor.convertFileSrc(fileUri.uri); // Convert native URI to displayable WebView path
+                    } catch (e) {
+                        console.warn(\`Could not resolve image URI for '\${wine.image_path}':\`, e);
+                        // Keep placeholder if there's an error
+                    }
+                }
+            }
+            return { ...wine, displayImageSrc: imageSrc }; // Return wine object with its displayable image source
+        }));
+        
+        wineListContainer.innerHTML = ""; // Clear loader/previous content before adding new items
+
+        // Generate and append HTML for each wine
+        winesWithImageSrc.forEach(wine => {
+            const wineIdForJs = wine.id ? wine.id.replace(/'/g, "\\'") : ''; // Escape single quotes in ID for JS in HTML
+            const wineItemHTML = \`
+                <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 border-b border-gray-100 cursor-pointer hover:bg-gray-50" 
+                     onclick="navigateToAddModifyPage('\${wineIdForJs}')"
+                     title="View/Edit \${wine.name}">
+                  <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-14 shadow-sm" 
+                       style="background-image: url('\${wine.displayImageSrc}');"></div>
+                  <div class="flex flex-col justify-center overflow-hidden flex-1">
+                    <p class="text-[#171212] text-base font-medium leading-normal line-clamp-1">\${wine.name}</p>
+                    <p class="text-[#826869] text-sm font-normal leading-normal line-clamp-1">\${wine.vintage || 'N/A'} - \${wine.type || 'N/A'}</p>
+                    <p class="text-[#826869] text-sm font-normal leading-normal line-clamp-1">Rating: \${typeof wine.rating === 'number' ? wine.rating+'/10' : 'N/A'}</p>
+                  </div>
+                </div>
+            \`;
+            wineListContainer.innerHTML += wineItemHTML;
+        });
+    }
+
+    /**
+     * Loads all wines from the database and triggers the initial rendering.
+     */
+    async function loadAndRenderWines() {
+        try {
+            if (!window.db || typeof window.db.initializeDatabase !== 'function') {
+                console.error("Database module (window.db) is not available. Ensure database.js is loaded.");
+                alert("Critical Error: Database module failed to load. App functionality will be limited.");
+                document.getElementById("wineListContainer").innerHTML = "<p class='text-center text-red-500 p-4'>Error: Could not load database.</p>";
+                return;
+            }
+            // Initialize DB (creates schema/sample data if needed)
+            await window.db.initializeDatabase(); 
+            allWines = await window.db.getAllWinesDB(); 
+            currentWines = [...allWines]; // Set currentWines to all wines initially
+            await applyFiltersAndSort(); // Apply current filters/sort (initially 'All') and render
+        } catch (error) {
+            console.error("Fatal Error: Failed to load wines from database:", error);
+            alert(\`Error loading wine data: \${error.message}. Please try restarting the app.\`);
+            document.getElementById("wineListContainer").innerHTML = \`"<p class='text-center text-red-500 p-4'>Failed to load wines: \${error.message}</p>"\`;
+            allWines = []; currentWines = []; 
+            // await applyFiltersAndSort(); // Render empty state or error
+        }
+    }
+
+    /**
+     * Applies current search, filter, and sort criteria to the wine list and re-renders it.
+     */
+    async function applyFiltersAndSort() {
+        let wines = [...allWines]; // Start with a fresh copy of all wines
+
+        // Apply search filter
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput && searchInput.value) {
+          const searchTerm = searchInput.value.toLowerCase().trim();
+          if (searchTerm) {
+            wines = wines.filter(wine => 
+                wine.name.toLowerCase().includes(searchTerm) ||
+                (wine.vintage && String(wine.vintage).toLowerCase().includes(searchTerm)) || // Ensure vintage is string
+                (wine.type && wine.type.toLowerCase().includes(searchTerm))
+            );
+          }
+        }
+
+        // Apply type filter (if not "All")
+        if (activeTypeFilter && activeTypeFilter !== "All") {
+            wines = wines.filter(wine => wine.type === activeTypeFilter);
+        }
+
+        // Apply sorting
+        wines.sort((a, b) => {
+            const nameA = a.name.toLowerCase(); 
+            const nameB = b.name.toLowerCase();
+            if (nameA < nameB) return currentSortOrder === "ascending" ? -1 : 1;
+            if (nameA > nameB) return currentSortOrder === "ascending" ? 1 : -1;
+            return 0;
+        });
+
+        currentWines = wines; // Update the global list of currently displayed wines
+        await renderWineList(currentWines); // Re-render the list (async due to image processing)
+    }
+
+    // Event listener for when the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", async () => {
+        // Search functionality
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+            searchInput.addEventListener("input", () => applyFiltersAndSort()); // Re-filter on input
+        } else {
+            console.warn("Search input element 'searchInput' not found.");
+        }
+        
+        // Sort functionality
+        document.querySelectorAll("input[name='sortOrder']").forEach(radio => {
+            radio.addEventListener("change", (event) => {
+                currentSortOrder = event.target.value; 
+                applyFiltersAndSort(); // Re-sort and render
+            });
+        });
+
+        // Wine type filter buttons
+        const typeFilterButtons = document.querySelectorAll(".type-filter-btn");
+        typeFilterButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const filterType = button.dataset.type;
+                // Update active state for visual feedback
+                typeFilterButtons.forEach(btn => {
+                    btn.classList.remove("bg-[#e9b8ba]", "text-white", "font-semibold");
+                    btn.classList.add("bg-[#f4f1f1]");
+                });
+                
+                activeTypeFilter = filterType; // Set new active filter ("All" will also be set here)
+                button.classList.add("bg-[#e9b8ba]", "text-white", "font-semibold"); // Highlight active filter
+                button.classList.remove("bg-[#f4f1f1]");
+                
+                applyFiltersAndSort(); // Re-filter and render
+            });
+        });
+        
+        // Initial load of wines from the database
+        await loadAndRenderWines(); 
+    });
+
+    // Navigation functions (should be globally available or defined if not already)
+    if (typeof window.navigateToAddModifyPage !== "function") {
+        window.navigateToAddModifyPage = (wineId) => {
+          const url = wineId ? \`add_modify.html?id=\${encodeURIComponent(wineId)}\` : "add_modify.html";
+          window.location.href = url;
+        };
+    }
+    </script>
+    <!-- INDEX_SCRIPT_END -->
+  </body>
+</html>
