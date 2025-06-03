@@ -1,155 +1,21 @@
-<html>
-  <head>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
-    />
-
-    <title>Stitch Design</title>
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  </head>
-  <body>
-    <div
-      class="relative flex size-full min-h-screen flex-col bg-[#fbf9f9] justify-between group/design-root overflow-x-hidden"
-      style='--select-button-svg: url(&apos;data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(139,91,92)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e&apos;); font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'
-    >
-      <div>
-        <div class="flex items-center bg-[#fbf9f9] p-4 pb-2 justify-between">
-          <div class="text-[#191010] flex size-12 shrink-0 items-center" data-icon="X" data-size="24px" data-weight="regular">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-              <path
-                d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"
-              ></path>
-            </svg>
-          </div>
-          <h2 class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Add Wine</h2>
-        </div>
-        <h3 class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Wine Photo</h3>
-        <div class="flex flex-col p-4">
-          <div class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-[#e3d4d4] px-6 py-14">
-            <div class="flex max-w-[480px] flex-col items-center gap-2">
-              <p class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center">Add Photo</p>
-              <p class="text-[#191010] text-sm font-normal leading-normal max-w-[480px] text-center">Tap to add a photo of the wine</p>
-            </div>
-            <button
-              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#f1e9ea] text-[#191010] text-sm font-bold leading-normal tracking-[0.015em]"
-            >
-              <span class="truncate">Add Photo</span>
-            </button>
-          </div>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Wine Name</p>
-            <input
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-              value=""
-            />
-          </label>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Vintage</p>
-            <input
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-              value=""
-            />
-          </label>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Varietal</p>
-            <input
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-              value=""
-            />
-          </label>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Appellation</p>
-            <input
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-              value=""
-            />
-          </label>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Alcohol Percentage</p>
-            <input
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-              value=""
-            />
-          </label>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Price</p>
-            <input
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-              value=""
-            />
-          </label>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Wine Type</p>
-            <select
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none h-14 bg-[image:--select-button-svg] placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-            >
-              <option value="one"></option>
-              <option value="two">two</option>
-              <option value="three">three</option>
-            </select>
-          </label>
-        </div>
-        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label class="flex flex-col min-w-40 flex-1">
-            <p class="text-[#191010] text-base font-medium leading-normal pb-2">Tasting Notes</p>
-            <textarea
-              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-0 border-none bg-[#f1e9ea] focus:border-none min-h-36 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
-            ></textarea>
-          </label>
-        </div>
-        <div class="@container">
-          <div class="relative flex w-full flex-col items-start justify-between gap-3 p-4 @[480px]:flex-row @[480px]:items-center">
-            <div class="flex w-full shrink-[3] items-center justify-between">
-              <p class="text-[#191010] text-base font-medium leading-normal">Rating (0-10)</p>
-              <p class="text-[#191010] text-sm font-normal leading-normal @[480px]:hidden">7</p>
-            </div>
-            <div class="flex h-4 w-full items-center gap-4">
-              <div class="flex h-1 flex-1 rounded-sm bg-[#e3d4d4]">
-                <div class="h-full w-[32%] rounded-sm bg-[#e9b8ba]"></div>
-                <div class="relative"><div class="absolute -left-2 -top-1.5 size-4 rounded-full bg-[#e9b8ba]"></div></div>
-              </div>
-              <p class="text-[#191010] text-sm font-normal leading-normal hidden @[480px]:block">7</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="flex justify-stretch">
-          <div class="flex flex-1 gap-3 flex-wrap px-4 py-3 justify-between">
-            <button
-              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#e9b8ba] text-[#191010] text-base font-bold leading-normal tracking-[0.015em]"
-            >
-              <span class="truncate">Save Wine</span>
-            </button>
-            <button
-              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#f1e9ea] text-[#191010] text-base font-bold leading-normal tracking-[0.015em]"
-            >
-              <span class="truncate">Remove</span>
-            </button>
-          </div>
-        </div>
-        <div class="h-5 bg-[#fbf9f9]"></div>
-      </div>
-    </div>
-  </body>
-</html>
+<html><head><title>Add/Modify Wine</title></head><body>
+  <h2 class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Add Wine</h2>
+  <div class="text-[#191010] flex size-12 shrink-0 items-center" data-icon="X" data-size="24px" data-weight="regular"></div>
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Wine Name</p><input class="form-input some-classes" value="">
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Vintage</p><input class="form-input some-classes" value="">
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Varietal</p><input class="form-input some-classes" value="">
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Appellation</p><input class="form-input some-classes" value="">
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Alcohol Percentage</p><input class="form-input some-classes" value="">
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Price</p><input class="form-input some-classes" value="">
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Wine Type</p><select class="form-input some-classes"></select>
+  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Tasting Notes</p><textarea class="form-input some-classes"></textarea>
+  <div class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-[#e3d4d4] px-6 py-14">
+    <p class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center">Add Photo</p>
+    <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#f1e9ea] text-[#191010] text-sm font-bold leading-normal tracking-[0.015em]"><span class="truncate">Add Photo</span></button>
+  </div>
+  <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#e9b8ba] text-[#191010] text-base font-bold leading-normal tracking-[0.015em]"><span class="truncate">Save Wine</span></button>
+  <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#f1e9ea] text-[#191010] text-base font-bold leading-normal tracking-[0.015em]"><span class="truncate">Remove</span></button>
+  <!-- ADD_MODIFY_SCRIPT_START -->
+  <script type="module">console.log("Old add_modify.html script placeholder");</script>
+  <!-- ADD_MODIFY_SCRIPT_END -->
+</body></html>

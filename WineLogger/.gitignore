@@ -1,0 +1,30 @@
+# Node dependencies
+node_modules/
+
+# Build output
+www/
+dist/
+build/
+
+# Capacitor/Android specific
+android/
+ios/
+
+# Mac OS folder attributes
+.DS_Store
+
+# Capacitor user and IDE specific files
+.idea/
+.vscode/
+
+# Secrets
+*.pem
+*.keystore
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Generated capacitor config that might contain local paths if not careful
+# capacitor.config.json # Better to check this in usually, but for CI could be gitignored if generated
