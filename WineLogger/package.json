@@ -1,0 +1,21 @@
+{
+  "name": "winelogger",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@capacitor-community/sqlite": "^7.0.0",
+    "@capacitor/android": "^7.2.0",
+    "@capacitor/camera": "^7.0.1",
+    "@capacitor/cli": "^7.2.0",
+    "@capacitor/core": "^7.2.0",
+    "@capacitor/filesystem": "^7.1.1",
+    "@capacitor/preferences": "^7.0.1"
+  }
+}
