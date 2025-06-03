@@ -1,21 +1,464 @@
-<html><head><title>Add/Modify Wine</title></head><body>
-  <h2 class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Add Wine</h2>
-  <div class="text-[#191010] flex size-12 shrink-0 items-center" data-icon="X" data-size="24px" data-weight="regular"></div>
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Wine Name</p><input class="form-input some-classes" value="">
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Vintage</p><input class="form-input some-classes" value="">
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Varietal</p><input class="form-input some-classes" value="">
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Appellation</p><input class="form-input some-classes" value="">
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Alcohol Percentage</p><input class="form-input some-classes" value="">
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Price</p><input class="form-input some-classes" value="">
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Wine Type</p><select class="form-input some-classes"></select>
-  <p class="text-[#191010] text-base font-medium leading-normal pb-2">Tasting Notes</p><textarea class="form-input some-classes"></textarea>
-  <div class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-[#e3d4d4] px-6 py-14">
-    <p class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center">Add Photo</p>
-    <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#f1e9ea] text-[#191010] text-sm font-bold leading-normal tracking-[0.015em]"><span class="truncate">Add Photo</span></button>
-  </div>
-  <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#e9b8ba] text-[#191010] text-base font-bold leading-normal tracking-[0.015em]"><span class="truncate">Save Wine</span></button>
-  <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#f1e9ea] text-[#191010] text-base font-bold leading-normal tracking-[0.015em]"><span class="truncate">Remove</span></button>
-  <!-- ADD_MODIFY_SCRIPT_START -->
-  <script type="module">console.log("Old add_modify.html script placeholder");</script>
-  <!-- ADD_MODIFY_SCRIPT_END -->
-</body></html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitleHeader">Add Wine</title> <!-- Title will be updated by JS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Capacitor JS: Must be included for Capacitor plugins to work -->
+    <script src="capacitor.js"></script>
+    <!-- Database script: Ensure this is loaded before the page's main script -->
+    <script src="js/database.js"></script>
+    <style>
+      /* Basic styling for visual feedback or hidden elements */
+      .hidden { display: none; }
+    </style>
+  </head>
+  <body class="bg-[#fbf9f9]" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+    <div class="relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-x-hidden">
+      <div> <!-- Main content wrapper -->
+        <!-- Header -->
+        <div class="flex items-center bg-[#fbf9f9] p-4 pb-2 justify-between sticky top-0 z-10 shadow-sm">
+          <div id="backButton" class="text-[#191010] flex size-12 shrink-0 items-center cursor-pointer" title="Back to Wine List">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path></svg>
+          </div>
+          <h2 id="pageTitle" class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Add Wine</h2>
+        </div>
+
+        <!-- Wine Photo Section -->
+        <h3 class="text-[#191010] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Wine Photo</h3>
+        <div class="flex flex-col p-4 items-center">
+          <div id="winePhotoSection" class="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-[#e3d4d4] px-6 py-10 w-full max-w-md">
+            <img id="wineImageDisplay" src="#" alt="Wine image preview" class="max-w-full h-auto rounded-lg mb-2 hidden" style="max-height: 250px;"/>
+            <p id="photoActionText" class="text-[#191010] text-base font-medium text-center">Add Photo</p>
+            <p id="photoHelperText" class="text-gray-500 text-sm font-normal text-center mb-2">Tap button below to add a photo.</p>
+            <button
+              id="addChangePhotoBtn"
+              class="flex min-w-[120px] max-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#f1e9ea] text-[#191010] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-gray-200"
+            >
+              <span class="truncate">Add Photo</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Wine Details Form -->
+        <div class="px-4 py-3">
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Wine Name <span class="text-red-500">*</span></p>
+            <input
+              id="wineName"
+              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
+              placeholder="e.g., Château Margaux"
+            />
+          </label>
+
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Vintage</p>
+            <input
+              id="wineVintage" type="number" min="1900" max="2099" step="1"
+              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
+              placeholder="e.g., 2015"
+            />
+          </label>
+
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Varietal</p>
+            <input
+              id="wineVarietal"
+              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
+              placeholder="e.g., Cabernet Sauvignon"
+            />
+          </label>
+
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Appellation</p>
+            <input
+              id="wineAppellation"
+              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
+              placeholder="e.g., Margaux, Bordeaux"
+            />
+          </label>
+          
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Alcohol %</p>
+            <input
+              id="wineAlcohol"
+              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
+              placeholder="e.g., 13.5%"
+            />
+          </label>
+
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Price</p>
+            <input
+              id="winePrice"
+              class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] h-14 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
+              placeholder="e.g., $75 or €60"
+            />
+          </label>
+
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Wine Type</p>
+            <select
+              id="wineType"
+              class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] h-14 p-4 text-base font-normal leading-normal appearance-none"
+              style="background-image: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3e%3cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27M6 8l4 4 4-4%27/%3e%3c/svg%3e'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em;"
+            >
+              <option value="">Select Type...</option>
+              <option value="Red">Red</option>
+              <option value="White">White</option>
+              <option value="Rose">Rosé</option>
+              <option value="Sparkling">Sparkling</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Fortified">Fortified</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+          
+          <div class="mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Rating (0-10)</p>
+            <div class="flex items-center gap-3">
+              <input type="range" id="wineRating" min="0" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#e9b8ba] flex-grow">
+              <span id="wineRatingDisplay" class="text-[#191010] text-lg font-semibold w-8 text-center">5</span>
+            </div>
+          </div>
+
+          <label class="flex flex-col min-w-40 flex-1 mb-4">
+            <p class="text-[#191010] text-base font-medium leading-normal pb-1">Tasting Notes</p>
+            <textarea
+              id="wineNotes"
+              class="form-textarea flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#191010] focus:outline-0 focus:ring-2 focus:ring-[#e9b8ba] border-gray-300 bg-[#f8f0f0] min-h-36 placeholder:text-[#8b5b5c] p-4 text-base font-normal leading-normal"
+              placeholder="e.g., Aromas of blackcurrant, cedar, and a hint of vanilla..."
+            ></textarea>
+          </label>
+        </div>
+      </div> <!-- End Main content wrapper -->
+
+      <!-- Action Buttons Footer -->
+      <div class="sticky bottom-0 bg-[#fbf9f9] border-t border-gray-200 py-3 px-4">
+        <div class="flex gap-3 justify-stretch">
+            <button
+              id="saveWineBtn"
+              class="flex-1 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#e9b8ba] text-[#191010] text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#d0a0a1] focus:outline-none focus:ring-2 focus:ring-[#e9b8ba] focus:ring-opacity-50 disabled:opacity-50"
+            >
+              <span class="truncate">Save Wine</span>
+            </button>
+            <button
+              id="removeWineBtn"
+              style="display: none;" /* Hidden by default, shown in JS for edit mode */
+              class="flex-1 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#f1e9ea] text-red-600 text-base font-bold leading-normal tracking-[0.015em] hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50"
+            >
+              <span class="truncate">Remove</span>
+            </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD_MODIFY_SCRIPT_START -->
+    <script type="module">
+    // WineLogger/www/add_modify.html - Main script - Refined
+
+    // Ensure Capacitor APIs are available (they are typically global under Capacitor.Plugins)
+    const { Camera, CameraSource, CameraResultType } = Capacitor.Plugins;
+    const { Filesystem, Directory } = Capacitor.Plugins;
+
+    let currentWineId = null; // Holds the ID of the wine being edited, or null for new wine
+    let wineImagePath = null; // Holds the FILENAME of the image in Directory.Data (e.g., '123.jpeg')
+
+    /**
+     * Populates form fields with wine data.
+     * @param {Object} wine - The wine object to populate the form with.
+     */
+    function populateForm(wine) {
+        document.getElementById("wineName").value = wine.name || "";
+        document.getElementById("wineVintage").value = wine.vintage || "";
+        document.getElementById("wineVarietal").value = wine.varietal || "";
+        document.getElementById("wineAppellation").value = wine.appellation || "";
+        document.getElementById("wineAlcohol").value = wine.alcohol || "";
+        document.getElementById("winePrice").value = wine.price || "";
+        document.getElementById("wineType").value = wine.type || "";
+        document.getElementById("wineNotes").value = wine.notes || "";
+        
+        const ratingInput = document.getElementById("wineRating");
+        const ratingDisplay = document.getElementById("wineRatingDisplay");
+        if (ratingInput) ratingInput.value = wine.rating !== undefined ? wine.rating : 5; // Default to 5 if undefined
+        if (ratingDisplay) ratingDisplay.textContent = ratingInput ? ratingInput.value : (wine.rating !== undefined ? wine.rating : 5);
+
+        wineImagePath = wine.image_path; // Store existing image filename
+        updatePhotoDisplay(wineImagePath); // Update image preview
+    }
+
+    /**
+     * Updates the photo display section (image preview, button text).
+     * @param {string | null} localImageFilename - Filename of the image in Directory.Data, or null.
+     */
+    async function updatePhotoDisplay(localImageFilename) {
+        const wineImageDisplay = document.getElementById("wineImageDisplay");
+        const photoActionText = document.getElementById("photoActionText");
+        const photoHelperText = document.getElementById("photoHelperText");
+        const addChangePhotoBtnText = document.querySelector("#addChangePhotoBtn span.truncate");
+
+        if (!wineImageDisplay || !photoActionText || !addChangePhotoBtnText || !photoHelperText) {
+            console.warn("Some photo display elements not found. Cannot fully update UI for photo.");
+            return;
+        }
+
+        if (localImageFilename) {
+            try {
+                const fileUri = await Filesystem.getUri({
+                    directory: Directory.Data,
+                    path: localImageFilename
+                });
+                wineImageDisplay.src = Capacitor.convertFileSrc(fileUri.uri);
+                wineImageDisplay.classList.remove("hidden");
+                photoActionText.textContent = "Current Wine Photo";
+                photoHelperText.textContent = "Tap button below to change the photo.";
+                addChangePhotoBtnText.textContent = "Change Photo";
+            } catch (e) {
+                console.error(\`Error getting URI for stored image '\${localImageFilename}':\`, e);
+                wineImageDisplay.src = "#"; // Clear src
+                wineImageDisplay.classList.add("hidden"); // Hide if error
+                photoActionText.textContent = "Add Photo";
+                photoHelperText.textContent = "Could not load previous photo. Tap to add a new one.";
+                addChangePhotoBtnText.textContent = "Add Photo";
+                wineImagePath = null; // Clear path if image can't be loaded
+            }
+        } else {
+            wineImageDisplay.src = "#"; // Clear src
+            wineImageDisplay.classList.add("hidden");
+            photoActionText.textContent = "Add Photo";
+            photoHelperText.textContent = "Tap button below to add a photo of the wine.";
+            addChangePhotoBtnText.textContent = "Add Photo";
+        }
+    }
+
+
+    // DOMContentLoaded event listener
+    document.addEventListener("DOMContentLoaded", async () => {
+        // Navigation setup for the back button
+        const backButton = document.getElementById("backButton");
+        if (typeof window.goBackToList !== "function") { // Define if not globally available
+            window.goBackToList = () => { window.location.href = "index.html"; };
+        }
+        if (backButton) {
+            backButton.onclick = window.goBackToList;
+        } else {
+            console.warn("Back button ('backButton') not found.");
+        }
+
+        const pageTitle = document.getElementById("pageTitle");
+        const pageTitleHeader = document.getElementById("pageTitleHeader"); // For browser tab title
+        const removeWineBtn = document.getElementById("removeWineBtn");
+        const saveWineBtn = document.getElementById("saveWineBtn");
+        const addChangePhotoBtn = document.getElementById("addChangePhotoBtn");
+        const wineRatingInput = document.getElementById("wineRating");
+        const wineRatingDisplay = document.getElementById("wineRatingDisplay");
+
+        // Update rating display when slider changes
+        if (wineRatingInput && wineRatingDisplay) {
+            wineRatingDisplay.textContent = wineRatingInput.value; // Initial display
+            wineRatingInput.addEventListener("input", () => {
+                wineRatingDisplay.textContent = wineRatingInput.value;
+            });
+        } else {
+            console.warn("Rating input or display element not found.");
+        }
+
+        // Determine mode (Add or Edit) based on URL parameter
+        const params = new URLSearchParams(window.location.search);
+        currentWineId = params.get("id");
+
+        try {
+            if (!window.db || typeof window.db.initializeDatabase !== 'function') {
+                console.error("Database module (window.db) is not available.");
+                alert("Critical Error: Database module failed to load. Please go back and try again.");
+                if(saveWineBtn) saveWineBtn.disabled = true;
+                if(removeWineBtn) removeWineBtn.disabled = true;
+                return;
+            }
+            await window.db.initializeDatabase(); // Ensure DB is ready
+
+            if (currentWineId) {
+                // ----- EDIT MODE -----
+                const titleText = "Edit Wine Details";
+                if(pageTitle) pageTitle.textContent = titleText;
+                if(pageTitleHeader) pageTitleHeader.textContent = titleText;
+
+                const wine = await window.db.getWineByIdDB(currentWineId);
+                if (wine) {
+                    populateForm(wine);
+                } else {
+                    console.error("Wine not found for ID:", currentWineId);
+                    alert("Error: Wine details could not be found. Returning to list.");
+                    goBackToList();
+                    return; 
+                }
+                if(removeWineBtn) removeWineBtn.style.display = "block"; // Show remove button
+            } else {
+                // ----- ADD MODE -----
+                const titleText = "Add New Wine";
+                if(pageTitle) pageTitle.textContent = titleText;
+                if(pageTitleHeader) pageTitleHeader.textContent = titleText;
+                if(removeWineBtn) removeWineBtn.style.display = "none"; // Hide remove button
+                updatePhotoDisplay(null); // Ensure photo section is in "Add Photo" state
+            }
+        } catch (err) {
+            console.error("Error during page initialization (loading wine or DB):", err);
+            alert(\`Error initializing page: \${err.message}. Some functionalities might be affected.\`);
+            if(saveWineBtn) saveWineBtn.disabled = true; // Disable save if page init fails
+        }
+        
+
+        // Event listener for "Add/Change Photo" button
+        if(addChangePhotoBtn) {
+            addChangePhotoBtn.addEventListener("click", async () => {
+                try {
+                    const image = await Camera.getPhoto({
+                        quality: 90,
+                        allowEditing: false, 
+                        resultType: CameraResultType.Uri, 
+                        source: CameraSource.Prompt, 
+                        saveToGallery: false 
+                    });
+
+                    if (image.webPath && image.path) {
+                        const tempImagePath = image.path;
+                        const newFileName = \`wineimg_\${new Date().getTime()}.\${image.format || 'jpeg'}\`;
+
+                        await Filesystem.copy({
+                            from: tempImagePath,
+                            to: newFileName,
+                            toDirectory: Directory.Data 
+                        });
+                        
+                        const oldImageToDelete = wineImagePath; // Store current path before updating
+                        wineImagePath = newFileName; // Update global variable to the new persistent filename
+                        await updatePhotoDisplay(wineImagePath); // Update UI with new image
+                        alert("Photo updated successfully!");
+
+                        // If there was an old image and it's different from the new one, delete it
+                        if (oldImageToDelete && oldImageToDelete !== newFileName) {
+                            try {
+                                await Filesystem.deleteFile({ path: oldImageToDelete, directory: Directory.Data });
+                                console.log("Old image file deleted:", oldImageToDelete);
+                            } catch (delError) {
+                                console.warn("Could not delete old image file:", delError);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error("Image selection/capture error:", error);
+                    if (error.message && error.message.toLowerCase().includes('permissions')) {
+                        alert("Permission Denied. Please enable camera and/or storage permissions in your device settings for this app.");
+                    } else if (error.message && !error.message.toLowerCase().includes('user cancelled')) {
+                        // Only show alert if it's not a user cancellation
+                        alert(\`Could not select image. Error: \${error.message}\`);
+                    }
+                    // If user cancelled, do nothing further.
+                }
+            });
+        } else {
+            console.warn("Add/Change Photo button ('addChangePhotoBtn') not found.");
+        }
+
+        // Event listener for "Save Wine" button
+        if(saveWineBtn) {
+            saveWineBtn.addEventListener("click", async () => {
+                const wineNameInput = document.getElementById("wineName");
+                const wineName = wineNameInput ? wineNameInput.value.trim() : "";
+                if (!wineName) {
+                    alert("Wine Name is required. Please enter a name for the wine.");
+                    if(wineNameInput) wineNameInput.focus();
+                    return;
+                }
+
+                const originalButtonText = saveWineBtn.querySelector("span.truncate").textContent;
+                saveWineBtn.querySelector("span.truncate").textContent = "Saving..."; 
+                saveWineBtn.disabled = true;
+                if(removeWineBtn) removeWineBtn.disabled = true;
+
+
+                const wineData = {
+                    id: currentWineId || self.crypto.randomUUID(),
+                    name: wineName,
+                    vintage: document.getElementById("wineVintage") ? document.getElementById("wineVintage").value : null,
+                    varietal: document.getElementById("wineVarietal") ? document.getElementById("wineVarietal").value : null,
+                    appellation: document.getElementById("wineAppellation") ? document.getElementById("wineAppellation").value : null,
+                    alcohol: document.getElementById("wineAlcohol") ? document.getElementById("wineAlcohol").value : null,
+                    price: document.getElementById("winePrice") ? document.getElementById("winePrice").value : null,
+                    type: document.getElementById("wineType") ? document.getElementById("wineType").value : null,
+                    notes: document.getElementById("wineNotes") ? document.getElementById("wineNotes").value : null,
+                    rating: document.getElementById("wineRating") ? parseInt(document.getElementById("wineRating").value, 10) : 0,
+                    image_path: wineImagePath // Filename like '123.jpeg' or null
+                };
+
+                try {
+                    if (currentWineId) { 
+                        await window.db.updateWineDB(wineData);
+                        alert("Wine details updated successfully!");
+                    } else { 
+                        await window.db.addWineDB(wineData);
+                        alert("New wine added successfully to your collection!");
+                    }
+                    goBackToList(); 
+                } catch (err) {
+                    console.error("Error saving wine to database:", err);
+                    alert(\`Error saving wine: \${err.message}. Please try again.\`);
+                    saveWineBtn.querySelector("span.truncate").textContent = originalButtonText;
+                    saveWineBtn.disabled = false;
+                    if(removeWineBtn && currentWineId) removeWineBtn.disabled = false; // Only re-enable if in edit mode
+                }
+            });
+        } else {
+            console.warn("Save Wine button ('saveWineBtn') not found.");
+        }
+
+        // Event listener for "Remove Wine" button
+        if(removeWineBtn) {
+            removeWineBtn.addEventListener("click", async () => {
+                if (!currentWineId) {
+                    alert("Cannot remove wine: No wine is currently being edited.");
+                    return;
+                }
+                if (confirm("Are you sure you want to remove this wine from your collection? This action cannot be undone.")) {
+                    const originalButtonText = removeWineBtn.querySelector("span.truncate").textContent;
+                    removeWineBtn.querySelector("span.truncate").textContent = "Removing...";
+                    removeWineBtn.disabled = true;
+                    if(saveWineBtn) saveWineBtn.disabled = true;
+
+                    try {
+                        if (wineImagePath) { // wineImagePath holds the filename
+                            try {
+                                await Filesystem.deleteFile({ path: wineImagePath, directory: Directory.Data });
+                                console.log("Associated image file deleted:", wineImagePath);
+                            } catch (fsError) {
+                                console.warn("Could not delete image file during wine removal. It might have already been deleted or path is incorrect:", fsError);
+                                // Proceed with DB deletion even if file deletion fails, but log it.
+                            }
+                        }
+                        await window.db.deleteWineDB(currentWineId);
+                        alert("Wine removed successfully.");
+                        goBackToList();
+                    } catch (err) {
+                        console.error("Error removing wine from database:", err);
+                        alert(\`Error removing wine: \${err.message}. Please try again.\`);
+                        removeWineBtn.querySelector("span.truncate").textContent = originalButtonText;
+                        removeWineBtn.disabled = false;
+                        if(saveWineBtn) saveWineBtn.disabled = false;
+                    }
+                }
+            });
+        } else {
+            console.warn("Remove Wine button ('removeWineBtn') not found.");
+        }
+    });
+    </script>
+    <!-- ADD_MODIFY_SCRIPT_END -->
+  </body>
+</html>
